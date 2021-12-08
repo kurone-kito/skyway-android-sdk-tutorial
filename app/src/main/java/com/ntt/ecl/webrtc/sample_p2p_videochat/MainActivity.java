@@ -28,128 +28,127 @@ import java.util.ArrayList;
 //
 
 public class MainActivity extends Activity {
-	private static final String TAG = MainActivity.class.getSimpleName();
+  private static final String TAG = MainActivity.class.getSimpleName();
 
-	//
-	// Set your APIkey and Domain
-	//
+  //
+  // Set your APIkey and Domain
+  //
 
-	//
-	// declaration
-	//
+  //
+  // declaration
+  //
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-
-		//
-		// Windows title hidden
-		//
-
-		//
-		// Set UI handler
-		//
-
-		//
-		// Initialize Peer
-		//
-
-		//
-		// Set Peer event callbacks
-		//
-
-		// OPEN
-
-		// ERROR
-
-		// CLOSE
-
-		// DISCONNECTED
-
-		// CALL (Incoming call)
-
-		//
-		// Set GUI event listeners
-		//
-
-		// Set GUI event listner for Button (make/hang up a call)
-
-		// Action for switchCameraButton
-
-	}
-
-	//
-	// onRequestPermissionResult
-	//
-
-	//
-	// Activity Lifecycle
-	//
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onStop()	{
-		super.onStop();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
-
-	//
-	// Get a local MediaStream & show it
-	//
-
-	//
-	// Set callbacks for MediaConnection.MediaEvents
-	//
-
-	//
-	// Clean up objects
-	//
-
-	//
-	// Unset callbacks for PeerEvents
-	//
-
-	//
-	// Unset callbacks for MediaConnection.MediaEvents
-	//
-
-	//
-	// Close a remote MediaStream
-	//
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
 
-	//
-	// Create a MediaConnection
-	//
+    //
+    // Windows title hidden
+    //
 
-	//
-	// Listing all peers
-	//
+    //
+    // Set UI handler
+    //
+
+    //
+    // Initialize Peer
+    //
+
+    //
+    // Set Peer event callbacks
+    //
+
+    // OPEN
+
+    // ERROR
+
+    // CLOSE
+
+    // DISCONNECTED
+
+    // CALL (Incoming call)
+
+    //
+    // Set GUI event listeners
+    //
+
+    // Set GUI event listner for Button (make/hang up a call)
+
+    // Action for switchCameraButton
+
+  }
+
+  //
+  // onRequestPermissionResult
+  //
+
+  //
+  // Activity Lifecycle
+  //
+  @Override
+  protected void onStart() {
+    super.onStart();
+
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+  }
+
+  //
+  // Get a local MediaStream & show it
+  //
+
+  //
+  // Set callbacks for MediaConnection.MediaEvents
+  //
+
+  //
+  // Clean up objects
+  //
+
+  //
+  // Unset callbacks for PeerEvents
+  //
+
+  //
+  // Unset callbacks for MediaConnection.MediaEvents
+  //
+
+  //
+  // Close a remote MediaStream
+  //
 
 
-	//
-	// Update actionButton title
-	//
-	
+  //
+  // Create a MediaConnection
+  //
+
+  //
+  // Listing all peers
+  //
+
+
+  //
+  // Update actionButton title
+  //
+
 }
-

@@ -23,71 +23,71 @@ import java.util.ArrayList;
  *
  */
 public class PeerListDialogFragment extends DialogFragment
-		implements AdapterView.OnItemClickListener {
+  implements AdapterView.OnItemClickListener {
 
-	public interface PeerListDialogFragmentListener {
-		void onItemClick(String item);
-	}
+  public interface PeerListDialogFragmentListener {
+    void onItemClick(String item);
+  }
 
-	private ListView _lvList;
+  private ListView _lvList;
 
-	private PeerListDialogFragmentListener	_listener;
-	private ArrayList<String> _items;
+  private PeerListDialogFragmentListener _listener;
+  private ArrayList<String> _items;
 
 
-	@Nullable
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Window window = getDialog().getWindow();
-		window.requestFeature(Window.FEATURE_NO_TITLE);
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    Window window = getDialog().getWindow();
+    window.requestFeature(Window.FEATURE_NO_TITLE);
 
-		Context context = inflater.getContext();
-		WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-		Point ptSize = new Point();
-		display.getSize(ptSize);
+    Context context = inflater.getContext();
+    WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+    Display display = wm.getDefaultDisplay();
+    Point ptSize = new Point();
+    display.getSize(ptSize);
 
-		window.setLayout(ptSize.x * 2 / 3, ptSize.y * 2 / 3);
+    window.setLayout(ptSize.x * 2 / 3, ptSize.y * 2 / 3);
 
-		View vwDialog = inflater.inflate(R.layout.fragment_dialog_peerlist, container, false);
-		_lvList = (ListView)vwDialog.findViewById(R.id.listView);
-		_lvList.setOnItemClickListener(this);
+    View vwDialog = inflater.inflate(R.layout.fragment_dialog_peerlist, container, false);
+    _lvList = (ListView)vwDialog.findViewById(R.id.listView);
+    _lvList.setOnItemClickListener(this);
 
-		return vwDialog;
-	}
+    return vwDialog;
+  }
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, _items);
-		_lvList.setAdapter(adapter);
-	}
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, _items);
+    _lvList.setAdapter(adapter);
+  }
 
-	@Override
-	public void onDestroyView()	{
-		_listener = null;
-		_lvList = null;
-		_items = null;
+  @Override
+  public void onDestroyView() {
+    _listener = null;
+    _lvList = null;
+    _items = null;
 
-		super.onDestroyView();
-	}
+    super.onDestroyView();
+  }
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		if (null != _listener)	{
-			String item = _items.get(position);
-			_listener.onItemClick(item);
-		}
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    if (null != _listener) {
+      String item = _items.get(position);
+      _listener.onItemClick(item);
+    }
 
-		dismiss();
-	}
+    dismiss();
+  }
 
-	public void setListener(PeerListDialogFragmentListener listener)
-	{
-		_listener = listener;
-	}
-	public void setItems(ArrayList<String> list)
-	{
-		_items = list;
-	}
+  public void setListener(PeerListDialogFragmentListener listener)
+  {
+    _listener = listener;
+  }
+  public void setItems(ArrayList<String> list)
+  {
+    _items = list;
+  }
 }
