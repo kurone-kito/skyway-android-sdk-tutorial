@@ -30,7 +30,6 @@ import io.skyway.Peer.Browser.MediaStream;
 import io.skyway.Peer.Browser.Navigator;
 import io.skyway.Peer.CallOption;
 import io.skyway.Peer.MediaConnection;
-import io.skyway.Peer.OnCallback;
 import io.skyway.Peer.Peer;
 import io.skyway.Peer.PeerError;
 import io.skyway.Peer.PeerOption;
@@ -82,59 +81,45 @@ public class MainActivity extends Activity {
     //
 
     // OPEN
-    _peer.on(Peer.PeerEventEnum.OPEN, new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
+    _peer.on(Peer.PeerEventEnum.OPEN, object -> {
 
-        // Show my ID
-        _strOwnId = (String) object;
-        TextView tvOwnId = (TextView) findViewById(R.id.tvOwnId);
-        tvOwnId.setText(_strOwnId);
+      // Show my ID
+      _strOwnId = (String) object;
+      TextView tvOwnId = findViewById(R.id.tvOwnId);
+      tvOwnId.setText(_strOwnId);
 
-        // Request permissions
-        if (ContextCompat.checkSelfPermission(activity,
-          Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(activity,
-          Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-          ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},0);
-        }
-        else {
-
-          // Get a local MediaStream & show it
-          startLocalStream();
-        }
-
+      // Request permissions
+      if (ContextCompat.checkSelfPermission(activity,
+        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(activity,
+        Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},0);
       }
+      else {
+
+        // Get a local MediaStream & show it
+        startLocalStream();
+      }
+
     });
 
     // CALL (Incoming call)
-    _peer.on(Peer.PeerEventEnum.CALL, new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
-        if (!(object instanceof MediaConnection)) {
-          return;
-        }
-
-        _mediaConnection = (MediaConnection) object;
-        setMediaCallbacks();
-        _mediaConnection.answer(_localStream);
-
-        _bConnected = true;
-        updateActionButtonTitle();
+    _peer.on(Peer.PeerEventEnum.CALL, object -> {
+      if (!(object instanceof MediaConnection)) {
+        return;
       }
+
+      _mediaConnection = (MediaConnection) object;
+      setMediaCallbacks();
+      _mediaConnection.answer(_localStream);
+
+      _bConnected = true;
+      updateActionButtonTitle();
     });
 
-    _peer.on(Peer.PeerEventEnum.CLOSE, new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
-        Log.d(TAG, "[On/Close]");
-      }
-    });
-    _peer.on(Peer.PeerEventEnum.ERROR, new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
-        PeerError error = (PeerError) object;
-        Log.d(TAG, "[On/Error]" + error.getMessage());
-      }
+    _peer.on(Peer.PeerEventEnum.CLOSE, object -> Log.d(TAG, "[On/Close]"));
+    _peer.on(Peer.PeerEventEnum.ERROR, object -> {
+      PeerError error = (PeerError) object;
+      Log.d(TAG, "[On/Error]" + error.getMessage());
     });
 
 
@@ -142,60 +127,35 @@ public class MainActivity extends Activity {
     // Set GUI event listeners
     //
 
-    Button btnAction = (Button) findViewById(R.id.btnAction);
+    Button btnAction = findViewById(R.id.btnAction);
     btnAction.setEnabled(true);
-    btnAction.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        v.setEnabled(false);
+    btnAction.setOnClickListener(v -> {
+      v.setEnabled(false);
 
-        if (!_bConnected) {
+      if (!_bConnected) {
 
-          // Select remote peer & make a call
-          showPeerIDs();
-        }
-        else {
-
-          // Hang up a call
-          closeRemoteStream();
-          _mediaConnection.close(true);
-
-        }
-
-        v.setEnabled(true);
+        // Select remote peer & make a call
+        showPeerIDs();
       }
-    });
+      else {
 
-    Button switchCameraAction = (Button)findViewById(R.id.switchCameraAction);
-    switchCameraAction.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if(null != _localStream){
-          Boolean result = _localStream.switchCamera();
-          if(true == result) {
-            //Success
-          }
-          else {
-            //Failed
-          }
-        }
+        // Hang up a call
+        closeRemoteStream();
+        _mediaConnection.close(true);
 
       }
-    });
 
+      v.setEnabled(true);
+    });
   }
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-    switch (requestCode) {
-      case 0: {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          startLocalStream();
-        }
-        else {
-          Toast.makeText(this,"Failed to access the camera and microphone.\nclick allow when asked for permission.", Toast.LENGTH_LONG).show();
-        }
-        break;
+  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    if (requestCode == 0) {
+      if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        startLocalStream();
+      } else {
+        Toast.makeText(this, "Failed to access the camera and microphone.\nclick allow when asked for permission.", Toast.LENGTH_LONG).show();
       }
     }
   }
@@ -252,7 +212,7 @@ public class MainActivity extends Activity {
     MediaConstraints constraints = new MediaConstraints();
     _localStream = Navigator.getUserMedia(constraints);
 
-    Canvas canvas = (Canvas) findViewById(R.id.svLocalView);
+    Canvas canvas = findViewById(R.id.svLocalView);
     _localStream.addVideoRenderer(canvas,0);
   }
 
@@ -261,30 +221,21 @@ public class MainActivity extends Activity {
   //
   void setMediaCallbacks() {
 
-    _mediaConnection.on(MediaConnection.MediaEventEnum.STREAM, new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
-        _remoteStream = (MediaStream) object;
-        Canvas canvas = (Canvas) findViewById(R.id.svRemoteView);
-        _remoteStream.addVideoRenderer(canvas,0);
-      }
+    _mediaConnection.on(MediaConnection.MediaEventEnum.STREAM, object -> {
+      _remoteStream = (MediaStream) object;
+      Canvas canvas = findViewById(R.id.svRemoteView);
+      _remoteStream.addVideoRenderer(canvas,0);
     });
 
-    _mediaConnection.on(MediaConnection.MediaEventEnum.CLOSE, new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
-        closeRemoteStream();
-        _bConnected = false;
-        updateActionButtonTitle();
-      }
+    _mediaConnection.on(MediaConnection.MediaEventEnum.CLOSE, object -> {
+      closeRemoteStream();
+      _bConnected = false;
+      updateActionButtonTitle();
     });
 
-    _mediaConnection.on(MediaConnection.MediaEventEnum.ERROR, new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
-        PeerError error = (PeerError) object;
-        Log.d(TAG, "[On/MediaError]" + error);
-      }
+    _mediaConnection.on(MediaConnection.MediaEventEnum.ERROR, object -> {
+      PeerError error = (PeerError) object;
+      Log.d(TAG, "[On/MediaError]" + error);
     });
 
   }
@@ -296,7 +247,7 @@ public class MainActivity extends Activity {
     closeRemoteStream();
 
     if (null != _localStream) {
-      Canvas canvas = (Canvas) findViewById(R.id.svLocalView);
+      Canvas canvas = findViewById(R.id.svLocalView);
       _localStream.removeVideoRenderer(canvas,0);
       _localStream.close();
     }
@@ -357,7 +308,7 @@ public class MainActivity extends Activity {
       return;
     }
 
-    Canvas canvas = (Canvas) findViewById(R.id.svRemoteView);
+    Canvas canvas = findViewById(R.id.svRemoteView);
     _remoteStream.removeVideoRenderer(canvas,0);
     _remoteStream.close();
   }
@@ -396,51 +347,38 @@ public class MainActivity extends Activity {
 
     // Get all IDs connected to the server
     final Context fContext = this;
-    _peer.listAllPeers(new OnCallback() {
-      @Override
-      public void onCallback(Object object) {
-        if (!(object instanceof JSONArray)) {
-          return;
-        }
+    _peer.listAllPeers(object -> {
+      if (!(object instanceof JSONArray)) {
+        return;
+      }
 
-        JSONArray peers = (JSONArray) object;
-        ArrayList<String> _listPeerIds = new ArrayList<>();
-        String peerId;
+      JSONArray peers = (JSONArray) object;
+      ArrayList<String> _listPeerIds = new ArrayList<>();
+      String peerId;
 
-        // Exclude my own ID
-        for (int i = 0; peers.length() > i; i++) {
-          try {
-            peerId = peers.getString(i);
-            if (!_strOwnId.equals(peerId)) {
-              _listPeerIds.add(peerId);
-            }
-          } catch(Exception e){
-            e.printStackTrace();
+      // Exclude my own ID
+      for (int i = 0; peers.length() > i; i++) {
+        try {
+          peerId = peers.getString(i);
+          if (!_strOwnId.equals(peerId)) {
+            _listPeerIds.add(peerId);
           }
+        } catch(Exception e){
+          e.printStackTrace();
         }
+      }
 
-        // Show IDs using DialogFragment
-        if (0 < _listPeerIds.size()) {
-          FragmentManager mgr = getFragmentManager();
-          PeerListDialogFragment dialog = new PeerListDialogFragment();
-          dialog.setListener(
-            new PeerListDialogFragment.PeerListDialogFragmentListener() {
-              @Override
-              public void onItemClick(final String item) {
-                _handler.post(new Runnable() {
-                  @Override
-                  public void run() {
-                    onPeerSelected(item);
-                  }
-                });
-              }
-            });
-          dialog.setItems(_listPeerIds);
-          dialog.show(mgr, "peerlist");
-        }
-        else{
-          Toast.makeText(fContext, "PeerID list (other than your ID) is empty.", Toast.LENGTH_SHORT).show();
-        }
+      // Show IDs using DialogFragment
+      if (0 < _listPeerIds.size()) {
+        FragmentManager mgr = getFragmentManager();
+        PeerListDialogFragment dialog = new PeerListDialogFragment();
+        dialog.setListener(
+          item -> _handler.post(() -> onPeerSelected(item)));
+        dialog.setItems(_listPeerIds);
+        dialog.show(mgr, "peerlist");
+      }
+      else{
+        Toast.makeText(fContext, "PeerID list (other than your ID) is empty.", Toast.LENGTH_SHORT).show();
       }
     });
 
@@ -450,16 +388,13 @@ public class MainActivity extends Activity {
   // Update actionButton title
   //
   void updateActionButtonTitle() {
-    _handler.post(new Runnable() {
-      @Override
-      public void run() {
-        Button btnAction = (Button) findViewById(R.id.btnAction);
-        if (null != btnAction) {
-          if (false == _bConnected) {
-            btnAction.setText("Make Call");
-          } else {
-            btnAction.setText("Hang up");
-          }
+    _handler.post(() -> {
+      Button btnAction = findViewById(R.id.btnAction);
+      if (null != btnAction) {
+        if (!_bConnected) {
+          btnAction.setText("Make Call");
+        } else {
+          btnAction.setText("Hang up");
         }
       }
     });
